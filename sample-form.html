@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Static Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <span class="eyebrow">Runnable sample</span>
+            <h1>Static Form With Local JavaScript</h1>
+            <p class="lead">
+                This page is plain HTML, CSS, and JavaScript. It does not call a backend.
+                It collects input and renders a preview so the page still behaves like a real demo when opened directly or from a deployed WAR.
+            </p>
+            <div class="hero-actions">
+                <a class="btn-link btn-secondary-link" href="index.html">Back to overview</a>
+            </div>
+        </header>
+
+        <section class="form-layout">
+            <form id="sampleForm" class="form-card">
+                <div class="status-pill" id="statusPill">Ready</div>
+                <h2>Sample Inputs</h2>
+                <p class="small-copy">Use any values you want. The form is only here to prove the HTML runs inside the WAR.</p>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="projectName">Project name</label>
+                        <input id="projectName" name="projectName" type="text" value="Static HTML to WAR Demo" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="pageTitle">Page title</label>
+                        <input id="pageTitle" name="pageTitle" type="text" value="Sample Static Form" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="deploymentTarget">Deployment target</label>
+                        <select id="deploymentTarget" name="deploymentTarget">
+                            <option value="WildFly" selected>WildFly</option>
+                            <option value="Other Servlet Container">Other Servlet Container</option>
+                            <option value="Local browser only">Local browser only</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="contactEmail">Contact email</label>
+                        <input id="contactEmail" name="contactEmail" type="email" value="demo@example.com" required>
+                    </div>
+
+                    <div class="field full">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes">This sample keeps the page generic and self-contained.</textarea>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="primary" type="submit">Preview payload</button>
+                    <button class="secondary" type="button" id="resetButton">Reset sample</button>
+                </div>
+            </form>
+
+            <aside class="preview">
+                <div class="preview-box">
+                    <h2>Live Preview</h2>
+                    <pre class="code-block" id="previewOutput">Waiting for input...</pre>
+                </div>
+
+                <div class="panel">
+                    <h2>How it runs</h2>
+                    <p class="small-copy">
+                        Open this file directly, or deploy the WAR and open the same page from WildFly.
+                        Because there is no backend dependency, it stays runnable even in a plain static hosting setup.
+                    </p>
+                </div>
+            </aside>
+        </section>
+    </div>
+
+    <script>
+        const form = document.getElementById('sampleForm');
+        const previewOutput = document.getElementById('previewOutput');
+        const statusPill = document.getElementById('statusPill');
+        const resetButton = document.getElementById('resetButton');
+
+        function renderPreview() {
+            const payload = {
+                projectName: document.getElementById('projectName').value.trim(),
+                pageTitle: document.getElementById('pageTitle').value.trim(),
+                deploymentTarget: document.getElementById('deploymentTarget').value,
+                contactEmail: document.getElementById('contactEmail').value.trim(),
+                notes: document.getElementById('notes').value.trim()
+            };
+
+            previewOutput.textContent = JSON.stringify(payload, null, 2);
+            statusPill.textContent = 'Preview ready';
+            statusPill.classList.add('ready');
+        }
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            renderPreview();
+        });
+
+        resetButton.addEventListener('click', function () {
+            form.reset();
+            previewOutput.textContent = 'Waiting for input...';
+            statusPill.textContent = 'Ready';
+            statusPill.classList.remove('ready');
+        });
+
+        renderPreview();
+    </script>
+</body>
+</html>
